@@ -1,0 +1,4 @@
+all:
+  typescript:
+    # mode can be the less-compiler executable or empty for client-side rendering (not supported yet)
+    executable: tsc

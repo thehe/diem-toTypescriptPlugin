@@ -46,12 +46,17 @@ class toTypescriptPluginConfiguration extends sfPluginConfiguration
     if(!empty($this->exe)){
       $output = array();
       $retVal = -1;
-      $cmd = sprintf('%s %s --out %s', escapeshellcmd($this->exe), escapeshellarg($tsPath), escapeshellarg($assetPath));
-      exec($cmd, $output, $retVal);
+      $cmd = sprintf('%s %s --out %s --allowbool --allowimportmodule', escapeshellcmd($this->exe), escapeshellarg($tsPath), escapeshellarg($assetPath));
+      
+      $lastLine = exec($cmd, $output, $retVal);
       $done = $retVal === 0 && file_exists($assetPath);
       if($done){
           touch($assetPath, $mTimeTsFile);
           return $strAssetPath;
+      }
+      else{
+        $msg = (count($output) > 5 ? $lastLine  : implode(PHP_EOL, $output)) . sprintf(' exit_code: %d', $retVal);
+        throw new Exception($msg);
       }
     }
     
